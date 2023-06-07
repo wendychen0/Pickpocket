@@ -43,7 +43,8 @@ class Menu extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
           // easy mode
           game.settings = {
-            foodSpeed: 3,    
+            foodSpeed: 3,
+            gameTimer: 30000
           }
           this.sound.play('sfx_select');
           this.scene.start('trainingScene');    
