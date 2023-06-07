@@ -26,3 +26,6 @@ let cursorx;
 let cursory;
 let mousedown = false; 
 let highscore = 0;
+let isDropping = false;
+let isMovingRight = true;
+let timer;
