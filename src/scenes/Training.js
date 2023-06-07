@@ -32,6 +32,10 @@ class Training extends Phaser.Scene {
             },
           }
 
+        input = this.input;
+        input.on('pointerdown', this.clicked, this);
+        input.on('pointerup', this.notClicked, this);
+
         this.wallet = this.add.sprite(200, 60, 'wallet');
         this.wallet.setScale(0.3);
         this.pocket = this.add.image(game.config.width/2, 450, 'pocket');
@@ -49,6 +53,8 @@ class Training extends Phaser.Scene {
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
 
+        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.score, scoreConfig);
+
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             this.add.text(game.config.width/2, game.config.height/2 - 10, 'GAME OVER', scoreConfig).setOrigin(0.5);
             this.add.text(game.config.width/2, game.config.height/2 + 54, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5);
@@ -56,6 +62,8 @@ class Training extends Phaser.Scene {
         }, null, this);
     }
     update() {
+        cursorx = input.x;
+        cursory = input.y;
         if (!isDropping && !this.gameOver) {
             if (isMovingRight) {
                 this.wallet.x += this.moveSpeed; // horizontal speed
@@ -81,12 +89,20 @@ class Training extends Phaser.Scene {
             this.wallet.y = 50;
             isDropping = false;
         }
-        //if (this.wallet.y >= this.pocket.height && this.wallet.x ) {
+        //left top x: 233, y: 306 right top x:458 y:307
+        //82 length of wallet, 225 length of pocket
+        if (this.checkPlacement(this.wallet, this.pocket)) {
+            console.log('made it');
+            this.wallet.y = 60;
+            isDropping = false;
+            this.score += 1;
+            this.scoreLeft.text = this.score;
+        }
+        //if (this.wallet.y >= this.pocket.height && this.wallet.x - 40 >= this.pocket.x - 112 ) {
             // Increase score
             //score = Math.max(0, score - 10);
             //scoreText.setText('Score: ' + score);
         //}
-        //this.wallet.y += 5;
         if (Math.trunc(this.clock.elapsed/1000) == 5 && this.reached) {
             this.infoText.setVisible(false);
             //this.reached = false;
@@ -103,14 +119,22 @@ class Training extends Phaser.Scene {
             this.scene.start("menuScene");
         }
         this.timeLeft.text = Math.trunc(this.clock.getOverallRemainingSeconds());
-
+        //console.log('x',cursorx);
+        //console.log('y',cursory);
     }
-    /*endGame() {
-        // Stop the timer
-        timer.remove(false);
-      
-        // Display game over text
-        var gameOverText = this.add.text(config.width / 2, config.height / 2, 'Game Over', { fontSize: '64px', fill: '#ffffff' });
-        gameOverText.setOrigin(0.5);
-    }*/
+    checkPlacement(wallet, pocket) {
+        if (wallet.x - 40 >= pocket.x - 112 &&
+            wallet.x + 40 <= pocket.x + 112 &&
+            wallet.y >= this.pocket.height - 60) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    clicked(){
+        mousedown = true;
+      }
+    notClicked(){
+        mousedown = false;
+    }
 }
