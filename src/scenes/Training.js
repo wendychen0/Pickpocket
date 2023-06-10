@@ -52,6 +52,7 @@ class Training extends Phaser.Scene {
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.score, scoreConfig);
 
@@ -77,6 +78,7 @@ class Training extends Phaser.Scene {
             },
         }
 
+        // left and right wallet movement
         if (!isDropping && !this.gameOver) {
             if (isMovingRight) {
                 this.wallet.x += this.moveSpeed; // horizontal speed
@@ -131,11 +133,13 @@ class Training extends Phaser.Scene {
             this.reached = false;
         }
         if (Math.trunc(this.clock.elapsed/1000) == 30 && this.score < 10) {
-            this.add.text(game.config.width/2, game.config.height/2 - 10, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(game.config.width/2, game.config.height/2 + 54, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width/2, game.config.height/2 - 10, 'TIMES UP', scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width/2, game.config.height/2 + 54, 'Press (R) to Try Again or ← for Menu', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
-        } else if (Math.trunc(this.clock.elapsed/1000) == 30){
+        } else if (Math.trunc(this.clock.elapsed/1000) == 30 && this.score >= 10){
             this.add.text(game.config.width/2, game.config.height/2 - 10, 'Training Passed', scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width/2, game.config.height/2 + 54, 'Press → for the real test', scoreConfig).setOrigin(0.5);
+            this.passed = true;
             this.wallet.x = 200;
         }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
@@ -144,6 +148,9 @@ class Training extends Phaser.Scene {
           }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start("menuScene");
+        }
+        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
+            this.scene.start("playScene");
         }
         this.timeLeft.text = Math.trunc(this.clock.getOverallRemainingSeconds());
         //console.log('x',cursorx);
