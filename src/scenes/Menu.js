@@ -12,6 +12,8 @@ class Menu extends Phaser.Scene {
       this.load.audio('collect1', './assets/foodCollect.wav');
       this.load.audio('collect2', './assets/foodCollect2.wav');
       this.load.audio('hit', './assets/hit.wav');
+      this.load.audio('steal', './assets/steal.wav');
+
     }
     create() {
       this.title = this.add.sprite(game.config.width/2, 90, 'title');

@@ -30,7 +30,7 @@ class Training extends Phaser.Scene {
               left: 5,
               right: 5,
             },
-          }
+        }
 
         input = this.input;
         input.on('pointerdown', this.clicked, this);
@@ -56,14 +56,27 @@ class Training extends Phaser.Scene {
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.score, scoreConfig);
 
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-            this.add.text(game.config.width/2, game.config.height/2 - 10, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(game.config.width/2, game.config.height/2 + 54, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5);
-            this.gameOver = true;
+            
+            //this.gameOver = true;
         }, null, this);
     }
     update() {
         cursorx = input.x;
         cursory = input.y;
+        let scoreConfig = {
+            fontFamily: 'Trebuchet MS',
+            fontSize: '28px',
+            backgroundColor: '#F4E972',
+            color: '#30302c',
+            align: 'right',
+            padding: {
+              top: 7,
+              bottom: 7,
+              left: 5,
+              right: 5,
+            },
+        }
+
         if (!isDropping && !this.gameOver) {
             if (isMovingRight) {
                 this.wallet.x += this.moveSpeed; // horizontal speed
@@ -97,23 +110,37 @@ class Training extends Phaser.Scene {
             isDropping = false;
             this.score += 1;
             this.scoreLeft.text = this.score;
+            this.sound.play('steal');
         }
         //if (this.wallet.y >= this.pocket.height && this.wallet.x - 40 >= this.pocket.x - 112 ) {
             // Increase score
             //score = Math.max(0, score - 10);
             //scoreText.setText('Score: ' + score);
         //}
+
+        // timer for info text
         if (Math.trunc(this.clock.elapsed/1000) == 5 && this.reached) {
             this.infoText.setVisible(false);
             //this.reached = false;
         }
+
+        // increase speed after 15 secs
         if (Math.trunc(this.clock.elapsed/1000) == 15 && this.reached) {
             this.moveSpeed += 4;
             this.dropSpeed += 2;
             this.reached = false;
         }
+        if (Math.trunc(this.clock.elapsed/1000) == 30 && this.score < 10) {
+            this.add.text(game.config.width/2, game.config.height/2 - 10, 'GAME OVER', scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width/2, game.config.height/2 + 54, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5);
+            this.gameOver = true;
+        } else if (Math.trunc(this.clock.elapsed/1000) == 30){
+            this.add.text(game.config.width/2, game.config.height/2 - 10, 'Training Passed', scoreConfig).setOrigin(0.5);
+            this.wallet.x = 200;
+        }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
+            isMovingRight = true;
           }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start("menuScene");
