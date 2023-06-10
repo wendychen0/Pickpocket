@@ -18,6 +18,7 @@ class Training extends Phaser.Scene {
         this.dropSpeed = 4;
         this.score = 0;
         this.reached = true;
+        this.playing = true;
         let scoreConfig = {
             fontFamily: 'Trebuchet MS',
             fontSize: '28px',
@@ -46,8 +47,10 @@ class Training extends Phaser.Scene {
         this.timeLeft.setFontSize(30);
 
         this.infoText = this.add.text(game.config.width/2, 190, 'press SPACE to drop', { fontSize: '25px', fill: '#ffffff' });
+        this.infoText2 = this.add.text(game.config.width/2, 210, 'get 10 to pass', { fontSize: '25px', fill: '#ffffff' }).setOrigin(0.5);
         this.infoText.setOrigin(0.5);
         this.infoText.setVisible(true);
+        this.infoText2.setVisible(true);
 
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -123,7 +126,7 @@ class Training extends Phaser.Scene {
         // timer for info text
         if (Math.trunc(this.clock.elapsed/1000) == 5 && this.reached) {
             this.infoText.setVisible(false);
-            //this.reached = false;
+            this.infoText2.setVisible(false);
         }
 
         // increase speed after 15 secs
@@ -144,12 +147,14 @@ class Training extends Phaser.Scene {
         }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
+            this.gameOver = false;
             isMovingRight = true;
           }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start("menuScene");
+            this.gameOver = false;
         }
-        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
+        if (this.passed && Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
             this.scene.start("playScene");
         }
         this.timeLeft.text = Math.trunc(this.clock.getOverallRemainingSeconds());
