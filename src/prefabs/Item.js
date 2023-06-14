@@ -3,7 +3,6 @@ class Item extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, texture, frame);
         this.parentScene = scene;
         this.parentScene.add.existing(this);
-        //this.parentScene.physics.add.existing(this);
         this.x = x;
         this.y = y;
         if (name == 'wallet') {
@@ -17,7 +16,6 @@ class Item extends Phaser.Physics.Arcade.Sprite {
 
         this.setInteractive();
         this.on('pointerdown', this.onClick, this);
-        //this.item = this.scene.physics.add.sprite(x, y, 'player2', 'tank1');
     }
     update(){
 
@@ -30,13 +28,14 @@ class Item extends Phaser.Physics.Arcade.Sprite {
         
         if (itemsLeft < numItems) {
             this.parentScene.addItem();
-            itemsLeft += 1;
-            //console.log('add');
+            //itemsLeft += 2;
+            console.log('add1');
         }
         if (itemsLeft < numItems) {
             setTimeout(() => {
                 this.parentScene.addItem();
-                itemsLeft += 1;
+                //itemsLeft += 2;
+                console.log('add2');
             }, 5000);
         }
     }

@@ -11,14 +11,15 @@ class Play extends Phaser.Scene {
     create(){
         //this.add.text(game.config.width/2, game.config.height/2 - 10, 'Next Pickpocket Scene').setOrigin(0.5);
         this.score = 0;
+        this.maxPoints = 0;
+        this.gameOver = false;
+        this.passed = false;
         numItems = Phaser.Math.Between(25, 30);
-        //for (let i = 0; i < (numItems); i += 1){
-            setTimeout(() => {
-                this.addItem();
-                itemsLeft += 1;
-            }, 1000);
+        setTimeout(() => {
+            this.addItem();
+            itemsLeft += 1;
+        }, 1000);
             
-        //}
         let scoreConfig = {
             fontFamily: 'Trebuchet MS',
             fontSize: '28px',
@@ -38,6 +39,9 @@ class Play extends Phaser.Scene {
         this.timeLeft.setOrigin(0.5, 0.5);
         this.timeLeft.setFontSize(30);
 
+        this.infoText = this.add.text(game.config.width/2, 190, 'click to pickpocket', { fontSize: '25px', fill: '#ffffff' }).setOrigin(0.5);
+        this.infoText2 = this.add.text(game.config.width/2, 210, 'get all items to master', { fontSize: '25px', fill: '#ffffff' }).setOrigin(0.5);
+
         this.anims.create({
             key: 'watch-fade',
             frames: this.anims.generateFrameNumbers('watch-anim', { start: 0, end: 8, first: 0}),
@@ -45,35 +49,63 @@ class Play extends Phaser.Scene {
         });
 
         this.itemsLeft = this.add.text(borderUISize + borderPadding, game.config.height/2 - 40, itemsLeft, scoreConfig).setOrigin(0.5);
+        this.mPoints = this.add.text(borderUISize + borderPadding, game.config.height/2, 'max'+this.maxPoints, scoreConfig).setOrigin(0.5);
 
-        this.clock = this.time.delayedCall(25000, () => {
+        this.clock = this.time.delayedCall(23000, () => {
             this.add.text(game.config.width/2, game.config.height/2 - 10, 'TIMES UP', scoreConfig).setOrigin(0.5);
+            //this.gameOver = true;
         }, null, this);
     }
     update(){
             
         this.timeLeft.text = Math.trunc(this.clock.getOverallRemainingSeconds());
-        //itemsLeft.text = itemsLeft;
+        this.itemsLeft.text = itemsLeft;
+        this.mPoints.text = this.maxPoints;
+
+        // timer for info text
+        if (Math.trunc(this.clock.elapsed/1000) == 7){//} && this.reached) {
+            this.infoText.setVisible(false);
+            this.infoText2.setVisible(false);
+        }
+
+        if (Math.trunc(this.clock.elapsed/1000) == 23 && this.score < this.maxPoints) {
+            this.add.text(game.config.width/2, game.config.height/2 - 10, 'TIMES UP', scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width/2, game.config.height/2 + 54, 'Press (R) to Try Again or ← for Menu', scoreConfig).setOrigin(0.5);
+            this.gameOver = true;
+        } else if (Math.trunc(this.clock.elapsed/1000) == 23 && this.score == this.maxPoints){
+            this.add.text(game.config.width/2, game.config.height/2 - 10, 'Congrats', scoreConfig).setOrigin(0.5);
+            //this.add.text(game.config.width/2, game.config.height/2 + 54, 'Press → for the real test', scoreConfig).setOrigin(0.5);
+            this.passed = true;
+        }
+        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
+            this.scene.restart();
+            this.gameOver = false;
+          }
+        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            this.scene.start("menuScene");
+            this.gameOver = false;
+        }
         
     }
     addItem(){
-        let item1 = new Item(this, Phaser.Math.Between(0, this.game.config.width), Phaser.Math.Between(0, this.game.config.height), 'wallet', 0, 2, 'wallet');
-        let item2 = new Item(this, Phaser.Math.Between(0, this.game.config.width), Phaser.Math.Between(0, this.game.config.height), 'watch', 0, 1, 'watch');
-        let item = Phaser.Math.Between(1,2);
-        if (itemsLeft < numItems) {
+        if (itemsLeft < numItems && (!this.gameOver || !this.passed)) {
+            let item1 = new Item(this, Phaser.Math.Between(0, this.game.config.width), Phaser.Math.Between(0, this.game.config.height), 'wallet', 0, 2, 'wallet');
+            let item2 = new Item(this, Phaser.Math.Between(0, this.game.config.width), Phaser.Math.Between(0, this.game.config.height), 'watch', 0, 1, 'watch');
+            let item = Phaser.Math.Between(1,2);
             if (item == 1){
                 this.physics.add.existing(item1);
-                this.item1 = item1;
-                //itemsLeft += 1;
+                this.item1 = item1;  // add wallet
+                itemsLeft += 2;
+                this.maxPoints += item1.points;
             } else {
                 this.physics.add.existing(item2);
-                this.item2 = item2;   
-                //itemsLeft += 1;
+                this.item2 = item2;   // add watch
+                itemsLeft += 2;
+                this.maxPoints += item2.points;
             }
         }
         this.itemsLeft.text = itemsLeft;
-        console.log('left',itemsLeft);
-        console.log('num',numItems);
+        this.mPoints.text = this.maxPoints;
     }
     incrementScore(points) {
         this.score += points;
