@@ -96,7 +96,7 @@ class Training extends Phaser.Scene {
             }
         
         }
-        if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+        if (Phaser.Input.Keyboard.JustDown(keySPACE) && (!this.passed || !this.gameOver)) {
             isDropping = true;
         }
         if (isDropping) {

@@ -10,6 +10,11 @@ let config = {
     scale: {
       autoCenter: Phaser.Scale.CENTER_BOTH
     },
+    physics:{
+      default: "arcade",
+      arcade : {
+      }
+    },
     scene: [ Menu, Training, Play, Credits ]
   }
 
@@ -29,3 +34,5 @@ let highscore = 0;
 let isDropping = false;
 let isMovingRight = true;
 let timer;
+let itemsLeft = 0;
+let numItems = 0;
