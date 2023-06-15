@@ -21,21 +21,17 @@ class Item extends Phaser.Physics.Arcade.Sprite {
 
     }
     onClick() {
-        //this.parentScene.sound.play('collect');
+        this.parentScene.sound.play('take');
         this.parentScene.incrementScore(this.points); 
         this.destroy();
     
         
         if (itemsLeft < numItems) {
             this.parentScene.addItem();
-            //itemsLeft += 2;
-            console.log('add1');
         }
         if (itemsLeft < numItems) {
             setTimeout(() => {
                 this.parentScene.addItem();
-                //itemsLeft += 2;
-                console.log('add2');
             }, 5000);
         }
     }

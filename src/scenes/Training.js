@@ -117,12 +117,7 @@ class Training extends Phaser.Scene {
             this.scoreLeft.text = this.score;
             this.sound.play('steal');
         }
-        //if (this.wallet.y >= this.pocket.height && this.wallet.x - 40 >= this.pocket.x - 112 ) {
-            // Increase score
-            //score = Math.max(0, score - 10);
-            //scoreText.setText('Score: ' + score);
-        //}
-
+    
         // timer for info text
         if (Math.trunc(this.clock.elapsed/1000) == 5 && this.reached) {
             this.infoText.setVisible(false);
