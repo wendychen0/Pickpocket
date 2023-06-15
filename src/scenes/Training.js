@@ -117,7 +117,7 @@ class Training extends Phaser.Scene {
             this.scoreLeft.text = this.score;
             this.sound.play('steal');
         }
-    
+
         // timer for info text
         if (Math.trunc(this.clock.elapsed/1000) == 5 && this.reached) {
             this.infoText.setVisible(false);

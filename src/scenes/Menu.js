@@ -9,8 +9,6 @@ class Menu extends Phaser.Scene {
       this.load.image('pocket', './assets/pocket.png');
 
       // load audio
-      this.load.audio('collect1', './assets/foodCollect.wav');
-      this.load.audio('collect2', './assets/foodCollect2.wav');
       this.load.audio('hit', './assets/hit.wav');
       this.load.audio('steal', './assets/steal.wav');
       this.load.audio('take', './assets/take.wav');
@@ -49,7 +47,7 @@ class Menu extends Phaser.Scene {
             gameTimer: 30000
           }
           this.sound.play('sfx_select');
-          this.scene.start('playScene');    
+          this.scene.start('trainingScene');    
         }
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
           this.scene.start('creditsScene');
