@@ -1,7 +1,4 @@
-//
-// 
-/* 
-*/
+// Used physics systems, text objects, timers, input system/handling
 
 let config = {
     type: Phaser.AUTO,
